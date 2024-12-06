@@ -262,6 +262,50 @@ type ChatCompletionRequest struct {
 	Metadata map[string]string `json:"metadata,omitempty"`
 }
 
+func (req *ChatCompletionRequest) SetMaxTokens(maxTokens int) {
+	req.MaxTokens = maxTokens
+}
+
+func (req *ChatCompletionRequest) SetTemperature(temperature float32) {
+	req.Temperature = temperature
+}
+
+// SetToolChoice sets the tool choice for the request.
+// t must be a string or a ToolChoice object.
+// https://platform.openai.com/docs/api-reference/chat/create#chat-create-tool_choice
+func (req *ChatCompletionRequest) SetToolChoice(v any) {
+	req.ToolChoice = v
+}
+
+// AddTool adds a tool to the request. t must be a Tool object.
+func (req *ChatCompletionRequest) AddTool(t any) {
+	tool, ok := t.(Tool)
+	if !ok {
+		return
+	}
+	req.Tools = append(req.Tools, tool)
+}
+
+func (req *ChatCompletionRequest) SetModel(model string) {
+	req.Model = model
+}
+
+func (req *ChatCompletionRequest) SetResponseFormat(f any) {
+	format, ok := f.(*ChatCompletionResponseFormat)
+	if !ok {
+		return
+	}
+	req.ResponseFormat = format
+}
+
+func (req *ChatCompletionRequest) SetFrequencyPenalty(v float32) {
+	req.FrequencyPenalty = v
+}
+
+func (req *ChatCompletionRequest) SetPresencePenalty(v float32) {
+	req.PresencePenalty = v
+}
+
 type StreamOptions struct {
 	// If set, an additional chunk will be streamed before the data: [DONE] message.
 	// The usage field on this chunk shows the token usage statistics for the entire request,
