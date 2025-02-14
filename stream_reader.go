@@ -6,12 +6,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	utils "github.com/sashabaranov/go-openai/internal"
 )
 
 var (
-	headerData  = []byte("data: ")
+	headerData  = []byte("data:")
 	errorPrefix = []byte(`data: {"error":`)
 )
 
@@ -90,7 +91,7 @@ func (stream *streamReader[T]) processLines() ([]byte, error) {
 		}
 
 		noPrefixLine := bytes.TrimPrefix(noSpaceLine, headerData)
-		if string(noPrefixLine) == "[DONE]" {
+		if strings.HasSuffix(string(noPrefixLine), "[DONE]") || strings.HasPrefix(string(noPrefixLine), "[DONE]") {
 			stream.isFinished = true
 			return nil, io.EOF
 		}
